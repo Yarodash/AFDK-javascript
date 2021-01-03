@@ -88,22 +88,18 @@ class Component{
 
     add_input(){
         this.inputs.push(new Node(this.inputs.length))
-        this.renderer.update();
     }
 
     add_output(){
         this.outputs.push(new Node(this.outputs.length))
-        this.renderer.update();
     }
 
     add_wire(type_in, type_out, input_index, output_index, inpin=0, outpin=0){
         this.wires.push(new Wire(type_in, type_out, input_index, output_index, inpin, outpin));
-        this.renderer.update();
     }
 
     add_component(obj){
         this.components.push(obj.clone())
-        this.renderer.update();
     }
 
     remove_input(){
@@ -119,7 +115,7 @@ class Component{
     }
 
     get_state(index){
-        return this.inputs[index].get_state();
+        return this.outputs[index].get_state();
     }
 
     link(renderer){
@@ -150,6 +146,7 @@ class Component{
                         this.outputs[this.wires[j].output_index].set_state(this.inputs[this.wires[j].input_index].get_state());
                     }
                     else {
+                        console.log('ebat da', i, j);
                         this.outputs[this.wires[j].output_index].set_state(this.components[this.wires[j].input_index].get_state(this.wires[j].inpin));
                     }
                 }
@@ -206,8 +203,13 @@ class NOT_component extends Component{
     }
 }
 
-var AND = new AND_component();
-var NOT = new NOT_component();
-
 var current_component = new Component();
-
+current_component.add_input();
+current_component.add_input();
+current_component.add_output();
+current_component.add_component(new AND_component());
+current_component.add_component(new NOT_component());
+current_component.add_wire(0, 1, 0, 0, 0, 0);
+current_component.add_wire(0, 1, 1, 0, 0, 1);
+current_component.add_wire(1, 1, 0, 1, 0, 0);
+current_component.add_wire(1, 0, 1, 0, 0, 0);
